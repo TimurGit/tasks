@@ -10,6 +10,7 @@ export function maxItemAssociation(listItems) {
             })
         })
     })
-
-    return [...(listRecommendations.sort((a, b) => b.size - a.size)[0])].sort();
+    return listRecommendations.map(t=>[...t].sort().join(''))
+        .sort((a, b) => b.length - a.length || a.localeCompare(b))
+        .map(t => t.split(''))[0]
 }
