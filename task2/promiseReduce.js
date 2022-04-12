@@ -12,23 +12,12 @@ var fn3 = () => new Promise(resolve => {
 })
 
 function promiseReduce(asyncFunctions, reduce, initialValue) {
-    /*
-    * Реализация
-    */
-    return new Promise(function (resolve, reject) {
-        asyncFunctions.reduce((prev, cur) => {
-            return prev.then(() => {
-                return new Promise((resolve, reject) => {
-                    cur().then(value => {
-                        prev.then((prevValue) => resolve(reduce(prevValue, value)));
-                    }).catch(e => reject(e));
-                });
-            });
-        }, Promise.resolve(initialValue)).then(
-            (res) => resolve(res),
-            (e) => reject(e)
-        );
-    })
+    return asyncFunctions.reduce(
+        (prev, cur) => prev.then(
+            (memo) => cur()
+                .then((value) => reduce(memo, value))
+                .catch(e => reject(e))),
+        Promise.resolve(initialValue))
 }
 
 promiseReduce(
